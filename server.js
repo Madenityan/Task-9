@@ -1,15 +1,18 @@
-let http = require('http');
 let express = require('express');
+let fs = require('fs');
 
 const hostname = '127.0.0.1';
 const port = 3000;
+let app = express();
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/json');
-  res.end('Hello World\n');
+app.listen(3000);
+
+app.get('/todolist', function(req, res) {
+    let data =  fs.readFileSync('data.json', 'utf8');
+    res.json(JSON.parse(data));
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+app.post('/create', function (req, res) {
+
 });
+
