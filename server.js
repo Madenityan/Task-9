@@ -1,9 +1,9 @@
 const express = require('express');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 
-const hostname = '127.0.0.1';
-const port = 3000;
 const app = express();
+app.use(bodyParser.json());
 
 app.listen(3000);
 
@@ -13,22 +13,30 @@ app.get('/todolist', function (req, res) {
 });
 
 app.post('/create', function (req, res) {
-  const json = {
-    id: '5c2e8c94fb6fc02c41a54ec3',
-    userId: 'eyJhbGciOiJIUzI1NiJ9',
-    title: 'RRRRRR',
-    description: 'WWWWWW',
-    status: 'new',
-    selected: false
-  };
+  let body = req.body;
   let data = fs.readFileSync('data.json', 'utf8');
   let jsonData = JSON.parse(data);
-  jsonData.push(json);
+  jsonData.push(body);
   let writer = fs.writeFileSync('data.json', JSON.stringify(jsonData),'utf-8');
-  res.send(json);
+  res.send(body);
 });
 
-app.put('/update', function (req, res) {
+app.put('/update/:id', function (req, res) {
+  let data = fs.readFileSync('data.json', 'utf8');
+  let jsonData = JSON.parse(data);
+  let body = req.body;
+  let isFound = false;
 
+  let id = req.params.id;
+  jsonData.forEach(function(element, index, arr) {
+    if (element._id === id) {
+      arr[index] = body;
+      isFound = true;
+    }
+  });
+  if (isFound) {
+   fs.writeFileSync('data.json', JSON.stringify(jsonData),'utf-8');
+   return res.send(jsonData);
+  }
+  return res.status(404).end();
 });
-
