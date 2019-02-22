@@ -24,9 +24,11 @@ app.post('/create', function (req, res) {
   let data = fs.readFileSync('data.json', 'utf8');
   let jsonData = JSON.parse(data);
   jsonData.push(json);
-  console.log(json);
-  let writer = fs.writeFileSync('data.json', JSON.stringify(json),'utf-8');
-  console.log(writer);
+  let writer = fs.writeFileSync('data.json', JSON.stringify(jsonData),'utf-8');
   res.send(json);
+});
+
+app.put('/update', function (req, res) {
+
 });
 
